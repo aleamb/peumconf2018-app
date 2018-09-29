@@ -15,9 +15,14 @@ import javax.persistence.Table;
 @Table(name = "INCIDENCES")
 public class Incidence {
 
+	public static String[] types = { "INFO", "ERROR", "WARNING" };
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+
+	@Column(name = "INCIDENCE_TITLE")
+	private String title;
 
 	@ManyToOne
 	@JoinColumn(name = "OPERATOR_ID")
@@ -26,10 +31,19 @@ public class Incidence {
 	@Column(name = "INCIDENCE_START")
 	private LocalDateTime start;
 
-	private String message;
+	@Column(name = "INCIDENCE_TYPE")
+	private String type;
 
 	public Incidence() {
 
+	}
+
+	public Incidence(String title, Operator operator, LocalDateTime start, String type) {
+		super();
+		this.title = title;
+		this.operator = operator;
+		this.start = start;
+		this.type = type;
 	}
 
 	public long getId() {
@@ -46,14 +60,6 @@ public class Incidence {
 
 	public void setOperator(Operator operator) {
 		this.operator = operator;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public LocalDateTime getStart() {

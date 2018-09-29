@@ -13,7 +13,7 @@ public class RestOperatorController {
 	@Autowired
 	private OperatorRepository operatorRepository;
 
-	@GetMapping("/operators")
+	@GetMapping("/operators2")
 	public Iterable<Operator> getAll() {
 
 		return operatorRepository.findAll();

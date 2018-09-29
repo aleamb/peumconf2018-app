@@ -21,10 +21,6 @@ public class Operator {
 
 	@Column(name = "OPERATOR_NAME")
 	private String name;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "operator")
-	private List<Incidence> incidences;
-
 	
 	public Operator() {
 		
@@ -50,12 +46,5 @@ public class Operator {
 		this.name = name;
 	}
 
-	public List<Incidence> getIncidences() {
-		return incidences;
-	}
-
-	public void setIncidences(List<Incidence> incidences) {
-		this.incidences = incidences;
-	}
 
 }
