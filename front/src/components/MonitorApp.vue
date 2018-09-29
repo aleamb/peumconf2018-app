@@ -72,24 +72,29 @@
 	</div>
 </template>
 <script>
+
 import Vue from 'vue';
 import axios from 'axios';
 
 import VueStomp from "vue-stomp";
+
 Vue.use(VueStomp,  "http://localhost:8080/ws");
+
 
 let stompClient = null;
 
-function initListeners(pVueInstance) {
 
-	
-}
 
 export default {
 	data() {
 		return {
 			incidences: [],
-			incidencesError: null
+			incidencesError: null,
+			invokeIdCnt: 0,
+			 stompClient:{
+				monitorIntervalTime: 100,
+				stompReconnect: true          
+			}
 		};
 	},	
 	mounted() {
@@ -98,7 +103,6 @@ export default {
 			.then(function (response) {
 				console.log(response.data)
 				self.incidences = response.data;
-				initListeners(self);
 			})
 			.catch(function (error) {
 				self.incidencesError = true;
@@ -106,6 +110,12 @@ export default {
 	},
 	methods: {
 
+		connectSrv(){
+			var headers = {};
+			console.log('connect');
+            this.connetWM(headers, this.onConnected, this.onFailed);    
+		  },
+		  
 		onConnected(frame){
             console.log('Connected: ' + frame);
 			this.$stompClient.subscribe('/topic/incidence', this.responseCallback, this.onFailed);
@@ -121,8 +131,7 @@ export default {
 
 	}
 }
-
-
 </script>
+
 <style>
 </style>
