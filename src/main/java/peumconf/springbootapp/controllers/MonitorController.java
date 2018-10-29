@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MonitorController {
 
-	@GetMapping("/")
+	@GetMapping("/monitor")
 	public String monitor() {
 		return "monitor.html";
 	}

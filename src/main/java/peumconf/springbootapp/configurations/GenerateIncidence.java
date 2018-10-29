@@ -1,8 +1,9 @@
 package peumconf.springbootapp.configurations;
 
+import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.UUID;
 
-import org.apache.commons.text.RandomStringGenerator;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -12,7 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import peumconf.springbootapp.model.Incidence;
-import peumconf.springbootapp.model.Operator;
+import peumconf.springbootapp.repository.IncidenceRepository;
+import peumconf.springbootapp.services.OperatorsService;
 
 public class GenerateIncidence implements Job {
 
@@ -21,19 +23,28 @@ public class GenerateIncidence implements Job {
 	@Autowired
 	private SimpMessagingTemplate webSocket;
 
+	@Autowired
+	private OperatorsService operatorsService;
+
+	@Autowired
+	private IncidenceRepository indicenceRepository;
+
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 
 		Incidence incidence = new Incidence();
 
-		RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
-		String randomLetters = generator.generate(20);
+		UUID id = UUID.randomUUID();
 
-		incidence.setTitle(randomLetters);
-		incidence.setOperator(new Operator(generator.generate(7)));
+		incidence.setId(id.toString());
 
+		// obetener los últimos 2 bytes para generar un nombre corto
+		incidence.setTitle("Incidencia " + Long.toHexString(id.getLeastSignificantBits() & 0xffffL));
+
+		incidence.setOperator(operatorsService.getRandomOperator());
 		incidence.setType(Incidence.types[new Random().nextInt(10) % Incidence.types.length]);
-
+		incidence.setStart(LocalDateTime.now());
+		indicenceRepository.save(incidence);
 		webSocket.convertAndSend("/topic/incidence", incidence);
 
 		LOGGER.info("Incidencia enviada");

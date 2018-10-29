@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,11 +13,11 @@ import javax.persistence.Table;
 @Table(name = "INCIDENCES")
 public class Incidence {
 
-	public static String[] types = { "INFO", "ERROR", "WARNING" };
+	public final static String[] types = { "INFO", "ERROR", "WARNING" };
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	@Column(name = "INCIDENCE_ID")
+	private String id;
 
 	@Column(name = "INCIDENCE_TITLE")
 	private String title;
@@ -34,6 +32,9 @@ public class Incidence {
 	@Column(name = "INCIDENCE_TYPE")
 	private String type;
 
+	@Column(name = "RESOLVED")
+	private boolean resolved;
+
 	public Incidence() {
 
 	}
@@ -46,11 +47,11 @@ public class Incidence {
 		this.type = type;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -86,5 +87,12 @@ public class Incidence {
 		this.type = type;
 	}
 
-	
+	public boolean isResolved() {
+		return resolved;
+	}
+
+	public void setResolved(boolean resolved) {
+		this.resolved = resolved;
+	}
+
 }

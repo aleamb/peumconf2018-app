@@ -9,6 +9,3 @@ let monitorApp = new Vue({
 	  incidences: []
   }
 });
-
-
-

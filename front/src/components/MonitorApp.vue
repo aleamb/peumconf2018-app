@@ -14,7 +14,8 @@
 				</div>
 				<div id="topNav" class="navbar-menu">
 					<div class="navbar-start">
-					
+						<span class="tag is-success" v-if="connected">En línea</span>
+						<span class="tag is-danger" v-if="!connected">Fuera de línea</span>
 					</div>
 					<div class="navbar-end">
 						
@@ -25,17 +26,12 @@
 		
 		<section class="container">
 			<div class="columns">
-				<div class="column is-3">
-					<span class="button is-primary is-block is-alt is-large">Operarios</span>
-					<aside class="menu">
-						
-					</aside>
-				</div>
-				<div class="column is-9">
+			
+				<div class="column is-offset-1 is-10">
 					<div class="box content">
 						<span v-if="incidencesError">Error al obtener incidencias</span>
-						<article v-if="!incidencesError" v-for="incidence in incidences" :key="incidence.id" class="post">
-							<h4>{{incidence.title}}</h4>
+						<article v-if="!incidencesError" v-for="incidence in incidences" :key="incidence.id" :class="['post', incidence.hot ?  'hot' : '']">
+							<h4 class="incidence-title">{{incidence.title}}</h4>
 							<div class="media">
 								<div class="media-left">
 									<p class="image is-32x32">
@@ -46,12 +42,17 @@
 									<div class="content">
 										<p>
 											<a href="#">{{incidence.operator.name}}</a> &nbsp;
-											<span class="tag">{{incidence.type}}</span>
+											<span class="tag is-warning" v-if="incidence.type === 'WARNING'">{{incidence.type}}</span>
+											<span class="tag is-danger" v-if="incidence.type === 'ERROR'">{{incidence.type}}</span>
+											<span class="tag is-info" v-if="incidence.type === 'INFO'">{{incidence.type}}</span>
 										</p>
 									</div>
 								</div>
-								<div class="media-right">
-									<span class="has-text-grey-light"><i class="fa fa-comments"></i> 1</span>
+								<div class="media-right" v-if="incidence.resolved">
+									<button class="button is-success" type="button">Resuelta</button>
+								</div>
+								<div class="media-right" v-if="!incidence.resolved">
+									<button class="button is-info" type="button" @click="resolve(incidence)">Resolver</button>
 								</div>
 							</div>
 						</article>
@@ -75,63 +76,83 @@
 
 import Vue from 'vue';
 import axios from 'axios';
-
-import VueStomp from "vue-stomp";
-
-Vue.use(VueStomp,  "http://localhost:8080/ws");
-
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
 let stompClient = null;
-
-
 
 export default {
 	data() {
 		return {
 			incidences: [],
 			incidencesError: null,
-			invokeIdCnt: 0,
-			 stompClient:{
-				monitorIntervalTime: 100,
-				stompReconnect: true          
-			}
+			connected: false
 		};
 	},	
 	mounted() {
 		let self = this;
 		return axios.get('http://localhost:8080/incidences2')
 			.then(function (response) {
-				console.log(response.data)
 				self.incidences = response.data;
+				self.connect();
 			})
 			.catch(function (error) {
+				console.log(error);
 				self.incidencesError = true;
 			});
 	},
 	methods: {
-
-		connectSrv(){
-			var headers = {};
-			console.log('connect');
-            this.connetWM(headers, this.onConnected, this.onFailed);    
-		  },
-		  
-		onConnected(frame){
-            console.log('Connected: ' + frame);
-			this.$stompClient.subscribe('/topic/incidence', this.responseCallback, this.onFailed);
+		connect() {
+			console.log("Conectando a WebSocket...")
+			this.socket = new SockJS("http://localhost:8080/ws");
+			this.stompClient = Stomp.over(this.socket);
+			this.stompClient.connect({}, this.onConnected, this.onConnectError);
 		},
-		responseCallback(frame){
-            console.log("responseCallback msg=>" + frame.body);
-            let invokeId = frame.body.substr(invokeIdIndex, 4);
-            this.removeStompMonitor(invokeId);
+		onConnected(frame) {
+		  this.connected = true;
+		  this.subscribe();
 		},
-		onFailed(frame){
-            console.log('Failed: ' + frame);
-        },
-
+		onConnectError(error) {
+			console.log('Error de conexión: %s', error);
+		},
+		subscribe() {
+			this.stompClient.subscribe("/topic/incidence", msg => {
+				let incidence = JSON.parse(msg.body);
+				incidence.hot = true;
+				this.incidences.unshift(incidence);
+			});
+		},
+		resolve(incidence) {
+			let self = this;
+			return axios.put(`http://localhost:8080/incidences2/${incidence.id}`)
+				.then(function (response) {
+					incidence.resolved = true;
+				})
+				.catch(function (error) {
+					
+				});
+		}
 	}
 }
 </script>
-
 <style>
+.hot .incidence-title {
+	-webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+	-webkit-animation-iteration-count: infinite;
+    animation-name: example;
+    animation-duration: 1s;
+	animation-iteration-count: infinite;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes example {
+    50%  {color: brown;}
+}
+
+/* Standard syntax */
+@keyframes example {
+     50%  {color: brown;}
+}
+
 </style>

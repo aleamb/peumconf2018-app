@@ -1,14 +1,8 @@
 package peumconf.springbootapp.model;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -16,25 +10,25 @@ import javax.persistence.Table;
 public class Operator {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private String id;
 
 	@Column(name = "OPERATOR_NAME")
 	private String name;
-	
+
 	public Operator() {
-		
+
 	}
+
 	public Operator(String name) {
 		super();
 		this.name = name;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -45,6 +39,5 @@ public class Operator {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 }

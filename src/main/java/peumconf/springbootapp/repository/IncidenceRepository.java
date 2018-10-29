@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import peumconf.springbootapp.model.Incidence;
 
 @Repository("incidenceRepository")
-public interface IncidenceRepository extends JpaRepository<Incidence, Long> {
+public interface IncidenceRepository extends JpaRepository<Incidence, String> {
 
 }
