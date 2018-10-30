@@ -2,7 +2,7 @@
 
 Repositorio de la aplicación de ejemplo Spring Boot para la PEUM Conf 2018.
 
-Se trata de una aplicación JEE simple que usé en la [conferencia PEUM de 2018](https://www.programaresunamierda.com/2018/07/peumconf-2018.html) para mostrar el uso de Spring Boot. 
+Se trata de una aplicación JEE simple que usé en la [Conferencia PEUM 2018](https://www.programaresunamierda.com/2018/07/peumconf-2018.html) para mostrar el uso de Spring Boot. 
 Está desarrollada en Java 8, usando Maven como gestor de proyecto. En la conferencia usé eclipse ccmo IDE Eclipse Oxygen y Sistema Operativo Windows 10
 
 La aplicación es extremadamente simple. Consiste en una sola página Web donde se muestra un listado de incidencias que genera el backend en tiempo real y un botón que activa su resolución.
@@ -17,7 +17,7 @@ Esta mecánica tan simple se usa para cubrir ejemplos básicos de:
 - Arquitectura de servicios.
 - Controladores REST básicos.
 
-Fuera de tecnologías Spring Boot, el Frontend usa [Vue 2.X](https://vuejs.org/) como framework frontend y [Bulma](https://bulma.io/) como framewrok CSS. El front ha sido generado usando vue-cli, usando ES6 y [Webpack.](https://webpack.js.org/).
+Fuera de tecnologías Spring Boot, el Frontend usa [Vue 2.X](https://vuejs.org/) como framework frontend y [Bulma](https://bulma.io/) como framewrok CSS. El front ha sido generado usando vue-cli, usando ES6 y [Webpack.](https://webpack.js.org/)
 
 Se ha utilizado como plantilla Web [https://github.com/dansup/bulma-templates/blob/master/templates/forum.html](https://github.com/dansup/bulma-templates/blob/master/templates/forum.html)
 
