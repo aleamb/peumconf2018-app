@@ -21,7 +21,7 @@ Fuera de tecnologías Spring Boot, el Frontend usa [Vue 2.X](https://vuejs.org/)
 
 Se ha utilizado como plantilla Web [https://github.com/dansup/bulma-templates/blob/master/templates/forum.html](https://github.com/dansup/bulma-templates/blob/master/templates/forum.html)
 
-## Build
+## Compilación
 
 ### Prerrequisitos
 
@@ -56,7 +56,7 @@ npm run build
 mvn package
 ```
 
-## Run
+## Ejecución
 
 Una vez compilado y generdos tanto frontend como backend, puede ejecutarse con:
 
