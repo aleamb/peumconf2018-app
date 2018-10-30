@@ -1,10 +1,11 @@
 var path = require('path')
-var webpack = require('webpack')
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  entry: './src/main.js',
+  entry:  __dirname + '/src/main/resources/static/main.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: __dirname + '/src/main/resources/static/dist',
     publicPath: '/dist/',
     filename: 'monitor.js'
   },
@@ -48,12 +49,20 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    overlay: true
+    overlay: true,
+    contentBase: path.join(__dirname, '/src/main/resources/static/dist'),
   },
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+	    new HtmlWebpackPlugin({
+	        title: 'Monitor',
+	        template: __dirname + '/src/main/resources/templates/monitor.html',
+	        inject: false
+	      })
+	  ]
 }
 
 if (process.env.NODE_ENV === 'production') {
